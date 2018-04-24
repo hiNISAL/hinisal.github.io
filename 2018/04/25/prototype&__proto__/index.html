@@ -1,0 +1,25 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="author" content="NISAL"><link rel="alternative" href="/atom.xml" title="HIσ`∀´)σNISAL" type="application/atom+xml"><link rel="icon" href="/favicon.png"><title>prototype - HIσ`∀´)σNISAL</title><link rel="stylesheet" href="/css/main.css"><link rel="stylesheet" href="/js/fancybox/jquery.fancybox.min.css"><!--[if lt IE 9]><script>(function(a,b){a="abbr article aside audio bdi canvas data datalist details dialog figcaption figure footer header hgroup main mark meter nav output progress section summary template time video".split(" ");for(b=a.length-1;b>=0;b--)document.createElement(a[b])})()</script><![endif]--><script src="/js/jquery-3.1.1.min.js"></script><script src="/js/fancybox/jquery.fancybox.min.js"></script></head><body style="opacity:0"><header class="head"><h1 class="head-title u-fl"><a href="/">HIσ`∀´)σNISAL</a></h1><nav class="head-nav u-fr"><ul class="head-nav__list"><li class="head-nav__item"><a class="head-nav__link" href="/archives">カタログ/（目录）</a></li></ul></nav></header><main class="main"><article class="post"><header class="post__head"> <time class="post__time" datetime="2018-04-24T18:41:43.000Z">April 25, 2018</time><h1 class="post__title"><a href="/2018/04/25/prototype&amp;__proto__/">prototype</a></h1><div class="post__main echo"><p>重新回顾了一下原型的内容 发现之前还有一点没搞明白的地方</p>
+<p>之前说到属性标签<strong><strong>proto</strong></strong>和属性<strong>prototype</strong></p>
+<p>之前把这两个之间的关系搞混了</p>
+<p>其实是这样</p>
+<p>当申明了一个函数 这个函数酒会默认带上一个参数 或者说是属性 这个属性就是<strong>prototype</strong></p>
+<p>这个prototype又会带上两个参数 一个是constructor 另一个就是 <strong>proto</strong></p>
+<p><img src="/images/pp/1.png" alt=""></p>
+<p>这是在chrome控制台里的样子 其实这两个属性是chrome暴露出来的</p>
+<p>那么具体prototype和 <strong>proto</strong>的关系怎么样呢</p>
+<a id="more"></a>
+<p><pre class="lang:js decode:true">function Parent(){<br>  this.name = ‘nisal’;<br>}<br>Parent.prototype.age = 16;<br>var father = new Parent();<br></pre><br>这个函数 是一个构造函数</p>
+<p>根据之前有关this的那一内容 一个函数的this 默认指向的是全局对象</p>
+<p>但是当他作为构造函数的时候 <strong>他的this会指向一个空对象 并且这个对象的原型会指向这个函数的prototype属性</strong></p>
+<p><img src="/images/pp/2.png" alt=""></p>
+<p>和刚才差不多 申明一个函数Demo 他默认会又一个prototype属性 这个属性是默认包含constructor和<strong>proto</strong>的对象</p>
+<p>当把这个Demo函数作为构造函数的时候 新构造出来的对象他的this就会指向一个空对象 并且他的原型是他的构造函数 就是 function Demo()</p>
+<p>这种原型链的关系在控制台里一目了然</p>
+<p>所以刚才那一串代码的对象和属性关系就一目了然了</p>
+<p>当我new了一个parent的时候 并把new的对象赋值给parent后</p>
+<p>这个name属性就是parent的 但是这个age 是属于Parent的</p>
+<p>绕了一点 但是我们把这段代码丢进控制台看看</p>
+<p><img src="/images/pp/3.png" alt=""></p>
+<p>这样就一目了然了</p>
+</div></header></article><!--div.comments#lv-container(data-id = theme.livere_id, data-uid = theme.livere_uid)//script.
+  //(function(d, s) {var j, e = d.getElementsByTagName(s)[0];if (typeof LivereTower === 'function') { return; } j = d.createElement(s);j.src = 'https://cdn-city.livere.com/js/embed.dist.js';j.async = true;e.parentNode.insertBefore(j, e);})(document, 'script');--></main><footer class="foot"><div class="foot-copy">&copy; 2017-2018 NISAL</div></footer><script src="/js/scroller.js"></script><script src="/js/main.js"></script></body></html>

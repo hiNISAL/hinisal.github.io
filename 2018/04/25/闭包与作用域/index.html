@@ -1,0 +1,55 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="author" content="NISAL"><link rel="alternative" href="/atom.xml" title="HIσ`∀´)σNISAL" type="application/atom+xml"><link rel="icon" href="/favicon.png"><title>闭包与作用域 - HIσ`∀´)σNISAL</title><link rel="stylesheet" href="/css/main.css"><link rel="stylesheet" href="/js/fancybox/jquery.fancybox.min.css"><!--[if lt IE 9]><script>(function(a,b){a="abbr article aside audio bdi canvas data datalist details dialog figcaption figure footer header hgroup main mark meter nav output progress section summary template time video".split(" ");for(b=a.length-1;b>=0;b--)document.createElement(a[b])})()</script><![endif]--><script src="/js/jquery-3.1.1.min.js"></script><script src="/js/fancybox/jquery.fancybox.min.js"></script></head><body style="opacity:0"><header class="head"><h1 class="head-title u-fl"><a href="/">HIσ`∀´)σNISAL</a></h1><nav class="head-nav u-fr"><ul class="head-nav__list"><li class="head-nav__item"><a class="head-nav__link" href="/archives">カタログ/（目录）</a></li></ul></nav></header><main class="main"><article class="post"><header class="post__head"> <time class="post__time" datetime="2018-04-24T18:40:41.000Z">April 25, 2018</time><h1 class="post__title"><a href="/2018/04/25/闭包与作用域/">闭包与作用域</a></h1><div class="post__main echo"><p>闭包在很多语言中都存在 比如python、lua等</p>
+<p>不了解闭包 但是不一定没用到过</p>
+<p><pre class="lang:js decode:true">function func(){var a = 1; return a;}<br>func();</pre></p>
+<p>// 1<br>通常情况下 这样的一个函数声明的函数 在调用之后 内部的变量等都因为垃圾回收机制被回收了 不会保留在内存中</p>
+<p><pre class="lang:js decode:true">function func(){var a = 1; return function(){return a;}}<br>var func2 = func();<br>func2();</pre></p>
+<p>// 1<br>但是在这种情况下 我们把一个函数当作返回值返回 并且这个函数的作用是返回上层函数的a 这样我们调用这个函数后 a这个变量会一直留在内存中 不会被释放</p>
+<p>这种情况就是闭包</p>
+<p>闭包十分得常见 比如在使用jquery的ajax的时候</p>
+<p><pre class="lang:js decode:true ">(function(){<br>  var msg = “Success.”;<br>  var url = “./test.php”;<br>  $.ajax({<br>    url: url,<br>    success: function(){<br>      alert(msg);<br>    }<br>  });<br>})();</pre><br>在得到服务端返回的http请求之后 会调用success这个函数 这个函数可以访问到他上层函数或者说外部的变量 这里就是因为闭包</p>
+<a id="more"></a>
+<p>再看一个闭包的例子</p>
+<p><pre class="lang:js decode:true ">document.body.innerHTML = ‘&lt;button id=”btn1”&gt;Btn1&lt;/button&gt;&lt;button id=”btn2”&gt;Btn2&lt;/button&gt;&lt;button id=”btn3”&gt;Btn3&lt;/button&gt;&lt;button id=”btn4”&gt;Btn4&lt;/button&gt;’;<br>for(var i = 1; i &lt;= 4; i ++){<br>  document.getElementById(‘btn’ + i).addEventListener(‘click’, function(){<br>    alert(i);<br>  });<br>}</pre><br>这里在执行完毕后 btn1 - btn5不论按下哪一个 输出的都是5</p>
+<p>这是因为绑定事件的参数中的回调函数 在点击后触发 但是在初始化的时候 i已经变成5了 所以之后调用就输出5【这里和作用域也有点关系】</p>
+<p>当上面的代码改成这样</p>
+<p><pre class="lang:js decode:true ">.body.innerHTML = ‘&lt;button id=”btn1”&gt;Btn1&lt;/button&gt;&lt;button id=”btn2”&gt;Btn2&lt;/button&gt;&lt;button id=”btn3”&gt;Btn3&lt;/button&gt;&lt;button id=”btn4”&gt;Btn4&lt;/button&gt;’;<br>for(var i = 1; i &lt;= 4; i ++){<br>  (function(i){<br>    document.getElementById(‘btn’ + i).addEventListener(‘click’, function(){<br>      alert(i);<br>    });<br>  })(i);<br>}</pre><br>把绑定事件的代码部分用匿名的自执行函数包起来 并传入参数i 给每一个按钮一个独立的闭包空间 这样就可以达到想要的效果</p>
+<p>闭包还有<span style="color: #339966;"><strong>封装</strong></span>的作用</p>
+<p><pre class="lang:js decode:true ">(function(){<br>  var _uId = 11;<br>  var _uName = ‘nisal’;<br>  export.getUId = function(){<br>    return _uId;<br>  }<br>  export.getUName = function(){<br>    return _uName;<br>    window.export = export;<br>  }<br>})();</pre></p>
+<p>export._uId;  // undefined<br>get.getUId;   // 11<br>这样可以达到类似private声明的私有变量的效果 外部无法访问</p>
+<p>当然闭包也是有缺点的 他会造成一定的空间浪费、内存泄漏和性能消耗 但是他灵活、方便 可以做到封装</p>
+<hr>
+
+<p></p><h1><strong><span style="color: #339966;">作用域</span></strong></h1><br>作用域可以分成三类<p></p>
+<p><ul><br>     <li>全局作用域</li><br>     <li>函数作用域</li><br>     <li>eval作用域</li><br></ul></p>
+<p></p><h3><span style="color: #800000;">1.全局作用域</span></h3><br>通常我们在全局情况下定义的变量、函数、对象等等 都属于全局作用域<p></p>
+<p>比如 var a = 1;</p>
+<p>这个a属于全局的作用域</p>
+<p>需要注意的是</p>
+<p>javascript没有块级作用域</p>
+<p><pre class="lang:js decode:true ">for(var i = 0; i &lt; 5; i ++) alert(i);</pre><br>所以这样声明的i是不会被释放的 这一点和其他的很多高级语言都不太一样</p>
+<p>在循环之后输出i可以拿到值</p>
+<p></p><h3><span style="color: #800000;">2.函数作用域</span></h3><p></p>
+<p><pre class="lang:js decode:true ">(function(){var b = 1; alert(b)})(); alert(b) // 1, undefined</pre><br>这个很好理解 在函数外是拿不到函数內的值的 函数内部申明的变量都是局部变量【如果需要可以参考闭包 可以使用闭包拿到函数內的变量值】函数执行结束后就释放了局部变量</p>
+<p></p><h3><span style="color: #800000;">3.eval作用域</span></h3><br>eval其实在生产中很少用到<p></p>
+<p>他的作用域要根据情况定</p>
+<p>eval分为直接调用和间接调用</p>
+<p><ul><br>     <li>直接调用时：eval内代码块的作用域绑定到<strong>当前</strong>作用域。</li><br>     <li>间接调用时：eval内代码块的作用域绑定到<strong>全局</strong>作用域。</li><br></ul><br>【上面两句话是直接复制的】</p>
+<p>看个小例子</p>
+<p><pre class="lang:js decode:true ">function getOne(){<br>  var a = 0;<br>  evaler(‘a = 1’);<br>  return a;<br>}</pre></p>
+<p>function evaler(str){<br>  eval(str)<br>}</p>
+<p>alert(getOne());<br>这样呢 getOne()拿到的会是 0</p>
+<p><pre class="lang:js decode:true ">function getOne(){<br>  function evaler(str){<br>    eval(str)<br>  }</pre></p>
+<p>  var a = 0;<br>  evaler(‘a = 1’);<br>  return a;<br>}</p>
+<p>alert(getOne());<br>但是这样就能拿到1</p>
+<p>结合上面两句话 还是很好理解的</p>
+<hr>
+
+<p></p><h1><strong><span style="color: #800000;">作用域链</span></strong></h1><br>知道了什么是作用域 其实作用域链就很好理解了<p></p>
+<p><pre class="lang:js decode:true ">var x = 1;<br>function a(){<br>  var aa = 1;<br>  function b(){<br>    var bb = 1;<br>  }<br>  b();<br>}</pre><br>在这里 b 可以访问到bb和aa变量【之前说的闭包 aa也可以称为b的自由变量】和x变量 由內而外</p>
+<p>这就是作用域链了 由內而外能访问上层的内容</p>
+<p>但是使用 new Function()构造器构造的函数 是不能访问上层的变量的【这里和eval由关系】</p>
+<p>利用函数的作用域也可以达到封装的效果</p>
+<p>比如还是JQuery</p>
+<p>他的所有代码 都包在一个自执行匿名函数中 这样就不会污染到全局空间了</p>
+</div></header></article><!--div.comments#lv-container(data-id = theme.livere_id, data-uid = theme.livere_uid)//script.
+  //(function(d, s) {var j, e = d.getElementsByTagName(s)[0];if (typeof LivereTower === 'function') { return; } j = d.createElement(s);j.src = 'https://cdn-city.livere.com/js/embed.dist.js';j.async = true;e.parentNode.insertBefore(j, e);})(document, 'script');--></main><footer class="foot"><div class="foot-copy">&copy; 2017-2018 NISAL</div></footer><script src="/js/scroller.js"></script><script src="/js/main.js"></script></body></html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="author" content="NISAL"><link rel="alternative" href="/atom.xml" title="HIσ`∀´)σNISAL" type="application/atom+xml"><link rel="icon" href="/favicon.png"><title>原型链学习 - HIσ`∀´)σNISAL</title><link rel="stylesheet" href="/css/main.css"><link rel="stylesheet" href="/js/fancybox/jquery.fancybox.min.css"><!--[if lt IE 9]><script>(function(a,b){a="abbr article aside audio bdi canvas data datalist details dialog figcaption figure footer header hgroup main mark meter nav output progress section summary template time video".split(" ");for(b=a.length-1;b>=0;b--)document.createElement(a[b])})()</script><![endif]--><script src="/js/jquery-3.1.1.min.js"></script><script src="/js/fancybox/jquery.fancybox.min.js"></script></head><body style="opacity:0"><header class="head"><h1 class="head-title u-fl"><a href="/">HIσ`∀´)σNISAL</a></h1><nav class="head-nav u-fr"><ul class="head-nav__list"><li class="head-nav__item"><a class="head-nav__link" href="/archives">カタログ/（目录）</a></li></ul></nav></header><main class="main"><article class="post"><header class="post__head"> <time class="post__time" datetime="2018-04-24T18:36:20.000Z">April 25, 2018</time><h1 class="post__title"><a href="/2018/04/25/原型链学习/">原型链学习</a></h1><div class="post__main echo"><p>js原型链要从原型说起 而这个又离不开对象</p>
+<p>每个对象都有对象级别的三个标签</p>
+<p><ul><br>     <li><strong>proto</strong></li><br>     <li><strong>class</strong></li><br>     <li><strong>extensible</strong></li><br></ul><br>其中这个原型就是指第一个 proto</p>
+<p>简单的来看一个小例子</p>
+<p><pre class="lang:js decode:true ">var cat = function(){name: ‘Tom’, legs: 4};</pre></p>
+<p>var obj = new cat();<br><br><a id="more"></a></p>
+<p>以这里来看 obj其实是继承自cat这个对象的 所以说cat就是obj的原型 obj的<strong>proto</strong>标签指向的就是cat</p>
+<p>&nbsp;</p>
+<p>接着上面的代码</p>
+<p><pre class="lang:js decode:true ">cat.height = 10;<br>cat.width  = 1000;</pre><br>我们把猫添加两个属性分别是长宽</p>
+<p>obj的原型会指向cat 而cat的原型会指向Object然后Object最终会指向null</p>
+<p>这样的就构成了一条链式的结构 所以叫原型链</p>
+<p>我们这样访问obj的属性：</p>
+<p><pre class="lang:default decode:true">obj.legs;<br>//返回4</pre><br>他会返回4</p>
+<p>但是obj并没有legs属性 我们可以通过<strong>obj.hasOwnProperty(“legs”)</strong>来判断legs属性是否属于obj对象 发现返回的会是false 说明obj并没有legs这个属性</p>
+<p>这就是因为在obj中查找legs这个属性的时候 如果没找到 就会<strong>逐级向上层原型去查找</strong> 如果直到找到null还没找到的话 就会返回undefined</p>
+<p>&nbsp;</p>
+<p><strong>但这这里面有几个坑点要搞清楚</strong></p>
+<p><pre class="lang:js decode:true">cat.legs = 100;</pre><br>在上面的基础上 执行这条代码</p>
+<p>这个时候我们</p>
+<p><pre class="lang:default decode:true">obj.legs;<br>//返回100</pre><br>这里返回100并不是修改了原型cat上的legs</p>
+<p>而是给obj增加了一个legs属性并且赋值100</p>
+<p>同理还是可以通过<strong>obj.hasOwnProperty(“legs”)</strong>来判断legs是否属于obj 这次会返回true</p>
+<p>所以说如果要修改原型上的legs属性的值 可以通过</p>
+<p><pre class="lang:default decode:true">obj.prototype.legs = 999;</pre><br>这样来修改</p>
+<p>但是如果我们执行了 obj.legs = undefined;</p>
+<p>再obj.legs; 就会返回undefined</p>
+<p>这并不代表obj中或者obj的原型链上没有legs这个属性</p>
+<p>同理还是可以用<strong>hasOwnProperty</strong>活着 legs <strong>in </strong>obj来判断</p>
+<p>我们可以使用 delete legs删除obj下的legs 从而再访问obj.legs就会返回obj原型上的legs属性的值</p>
+<p>利用原型链的特性 可以完成对象的继承</p>
+</div></header></article><!--div.comments#lv-container(data-id = theme.livere_id, data-uid = theme.livere_uid)//script.
+  //(function(d, s) {var j, e = d.getElementsByTagName(s)[0];if (typeof LivereTower === 'function') { return; } j = d.createElement(s);j.src = 'https://cdn-city.livere.com/js/embed.dist.js';j.async = true;e.parentNode.insertBefore(j, e);})(document, 'script');--></main><footer class="foot"><div class="foot-copy">&copy; 2017-2018 NISAL</div></footer><script src="/js/scroller.js"></script><script src="/js/main.js"></script></body></html>
