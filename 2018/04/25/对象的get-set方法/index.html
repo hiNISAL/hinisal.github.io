@@ -1,8 +1,25 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="author" content="NISAL"><link rel="alternative" href="/atom.xml" title="HIσ`∀´)σNISAL" type="application/atom+xml"><link rel="icon" href="/favicon.png"><title>对象的get/set方法 - HIσ`∀´)σNISAL</title><link rel="stylesheet" href="/css/main.css"><link rel="stylesheet" href="/js/fancybox/jquery.fancybox.min.css"><!--[if lt IE 9]><script>(function(a,b){a="abbr article aside audio bdi canvas data datalist details dialog figcaption figure footer header hgroup main mark meter nav output progress section summary template time video".split(" ");for(b=a.length-1;b>=0;b--)document.createElement(a[b])})()</script><![endif]--><script src="/js/jquery-3.1.1.min.js"></script><script src="/js/fancybox/jquery.fancybox.min.js"></script></head><body style="opacity:0"><header class="head"><h1 class="head-title u-fl"><a href="/">HIσ`∀´)σNISAL</a></h1><nav class="head-nav u-fr"><ul class="head-nav__list"><li class="head-nav__item"><a class="head-nav__link" href="/archives">カタログ/（目录）</a></li></ul></nav></header><main class="main"><article class="post"><header class="post__head"> <time class="post__time" datetime="2018-04-24T18:37:24.000Z">April 25, 2018</time><h1 class="post__title"><a href="/2018/04/25/对象的get-set方法/">对象的get/set方法</a></h1><div class="post__main echo"><p>js在申明对象的时候 定义set和get方法</p>
 <p>那具体有什么用呢</p>
 <p>比如说 我们在修改一个对象的属性值的时候 我们想出发一系列的别的操作 但是单纯的通过<strong>对象.属性 = 属性值</strong>这种方式 除了赋值以外 一般情况下不会再做别的操作 这个时候就可以用get、set方法</p>
-<p><pre class="lang:js decode:true ">var person = {<br>  name: ‘nisal’,<br>  age: 16,<br>  _weight: 0,<br>  get weight(){<br>    alert(this._weight);<br>  },<br>  set weight(val){<br>    val &lt; 100 ? this._weight = val : alert(“太*了”);<br>  }<br>};<br>person.weight;<br>person.weight = 1000;<br>person.weight;</pre></p>
-<p>// 0<br>// 太重了<br>// 10<br><a id="more"></a></p>
+<pre class="lang:js decode:true ">var person = {
+  name: 'nisal',
+  age: 16,
+  _weight: 0,
+  get weight(){
+    alert(this._weight);
+  },
+  set weight(val){
+    val &lt; 100 ? this._weight = val : alert("太*了");
+  }
+};
+person.weight;
+person.weight = 1000;
+person.weight;
+
+// 0
+// 太重了
+// 10</pre>
+
 <p>这里可以看到 在get、set参数之后 跟上一个名字 然后以函数的方式传入值 再把具体的操作写在类似于函数体里面</p>
 <p>通过这个小例子可以看出 在定义属性的时候 我们可以做一些别的菜做</p>
 <p>比如在给weight赋值的时候 可以set方法 并且可以对值做一个判断</p>

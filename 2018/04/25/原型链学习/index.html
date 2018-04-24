@@ -2,8 +2,11 @@
 <p>每个对象都有对象级别的三个标签</p>
 <p><ul><br>     <li><strong>proto</strong></li><br>     <li><strong>class</strong></li><br>     <li><strong>extensible</strong></li><br></ul><br>其中这个原型就是指第一个 proto</p>
 <p>简单的来看一个小例子</p>
-<p><pre class="lang:js decode:true ">var cat = function(){name: ‘Tom’, legs: 4};</pre></p>
-<p>var obj = new cat();<br><br><a id="more"></a></p>
+<pre class="lang:js decode:true ">var cat = function(){name: 'Tom', legs: 4};
+
+var obj = new cat();
+</pre>
+
 <p>以这里来看 obj其实是继承自cat这个对象的 所以说cat就是obj的原型 obj的<strong>proto</strong>标签指向的就是cat</p>
 <p>&nbsp;</p>
 <p>接着上面的代码</p>

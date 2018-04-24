@@ -7,7 +7,6 @@
 <p>这种情况就是闭包</p>
 <p>闭包十分得常见 比如在使用jquery的ajax的时候</p>
 <p><pre class="lang:js decode:true ">(function(){<br>  var msg = “Success.”;<br>  var url = “./test.php”;<br>  $.ajax({<br>    url: url,<br>    success: function(){<br>      alert(msg);<br>    }<br>  });<br>})();</pre><br>在得到服务端返回的http请求之后 会调用success这个函数 这个函数可以访问到他上层函数或者说外部的变量 这里就是因为闭包</p>
-<a id="more"></a>
 <p>再看一个闭包的例子</p>
 <p><pre class="lang:js decode:true ">document.body.innerHTML = ‘&lt;button id=”btn1”&gt;Btn1&lt;/button&gt;&lt;button id=”btn2”&gt;Btn2&lt;/button&gt;&lt;button id=”btn3”&gt;Btn3&lt;/button&gt;&lt;button id=”btn4”&gt;Btn4&lt;/button&gt;’;<br>for(var i = 1; i &lt;= 4; i ++){<br>  document.getElementById(‘btn’ + i).addEventListener(‘click’, function(){<br>    alert(i);<br>  });<br>}</pre><br>这里在执行完毕后 btn1 - btn5不论按下哪一个 输出的都是5</p>
 <p>这是因为绑定事件的参数中的回调函数 在点击后触发 但是在初始化的时候 i已经变成5了 所以之后调用就输出5【这里和作用域也有点关系】</p>
