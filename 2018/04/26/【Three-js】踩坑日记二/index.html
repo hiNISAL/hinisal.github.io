@@ -1,0 +1,232 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="author" content="NISAL"><link rel="alternative" href="/atom.xml" title="HIσ`∀´)σNISAL" type="application/atom+xml"><link rel="icon" href="/favicon.png"><title>【Three.js】踩坑日记二 - HIσ`∀´)σNISAL</title><link rel="stylesheet" href="/css/main.css"><link rel="stylesheet" href="/js/fancybox/jquery.fancybox.min.css"><!--[if lt IE 9]><script>(function(a,b){a="abbr article aside audio bdi canvas data datalist details dialog figcaption figure footer header hgroup main mark meter nav output progress section summary template time video".split(" ");for(b=a.length-1;b>=0;b--)document.createElement(a[b])})()</script><![endif]--><script src="/js/jquery-3.1.1.min.js"></script><script src="/js/fancybox/jquery.fancybox.min.js"></script></head><body style="opacity:0"><header class="head"><h1 class="head-title u-fl"><a href="/">HIσ`∀´)σNISAL</a></h1><nav class="head-nav u-fr"><ul class="head-nav__list"><li class="head-nav__item"><a class="head-nav__link" href="/archives">カタログ/（目录）</a></li></ul></nav></header><main class="main"><article class="post"><header class="post__head"> <time class="post__time" datetime="2018-04-26T12:26:08.000Z">April 26, 2018</time><h1 class="post__title"><a href="/2018/04/26/【Three-js】踩坑日记二/">【Three.js】踩坑日记二</a></h1><div class="post__main echo"><p>这一坑呢 学习的主要是下面几个</p>
+<ul>
+<li>场景</li>
+<li>几何体</li>
+<li>网格</li>
+<li>摄像机</li>
+</ul>
+<p>内容不是太多 经过这一节 上一节中有些不太清的东西也会清楚很多</p>
+<h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>我们已经了解过场景的概念了</p>
+<p>场景想显示东西 得有<code>摄像机</code> <code>光源</code> <code>对象</code></p>
+<p>当然 我们的设置了基础材质的对象 是不需要光源就能看到的</p>
+<p>场景呢 就是这些东西的<code>容器</code></p>
+<p>我们先把本次内容最基本的框架塔一搭</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=&quot;en&quot;&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">  &lt;meta charset=&quot;UTF-8&quot;&gt;</span><br><span class="line">  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;</span><br><span class="line">  &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;ie=edge&quot;&gt;</span><br><span class="line">  &lt;title&gt;Document&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">  &lt;div id=&quot;wrap&quot;&gt;&lt;/div&gt;</span><br><span class="line">  &lt;script src=&quot;https://cdn.bootcss.com/three.js/92/three.min.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">  &lt;script&gt;</span><br><span class="line">    const T = THREE;</span><br><span class="line"></span><br><span class="line">    // 创建场景</span><br><span class="line">    let scene = new T.Scene();</span><br><span class="line">    </span><br><span class="line">    // 占位1</span><br><span class="line"></span><br><span class="line">    // 创建相机</span><br><span class="line">    let camera = new T.PerspectiveCamera(45, window.innerHeight / window.innerWidth, 0.1, 1000);</span><br><span class="line"></span><br><span class="line">    camera.position.x = -30;</span><br><span class="line">    camera.position.y = 40;</span><br><span class="line">    camera.position.z = 30;</span><br><span class="line">    camera.lookAt(scene.position);</span><br><span class="line">    // 把相机放到场景中</span><br><span class="line">    scene.add(camera);</span><br><span class="line"></span><br><span class="line">    // 创建一个立方几何体</span><br><span class="line">    let gCube = new T.BoxGeometry(5, 5, 5);</span><br><span class="line">    // 创建立方几何体的材质</span><br><span class="line">    let mCube = new T.MeshBasicMaterial(&#123; color: 0xFF0000, wireframe: true &#125;);</span><br><span class="line">    // 创建立方体网格对象</span><br><span class="line">    let cube = new THREE.Mesh(gCube, mCube);</span><br><span class="line">    </span><br><span class="line">    // 占位2</span><br><span class="line">    </span><br><span class="line">    cube.position.set(0, 0, 0);</span><br><span class="line">    // 把立方体放进场景中</span><br><span class="line">    scene.add(cube);</span><br><span class="line"></span><br><span class="line">    // 创建渲染器</span><br><span class="line">    let renderer = new T.WebGLRenderer();</span><br><span class="line">    // 背景色 eee</span><br><span class="line">    renderer.setClearColor(0xEEEEEE);</span><br><span class="line">    // 设置大小 全屏</span><br><span class="line">    renderer.setSize(window.innerWidth, window.innerHeight);</span><br><span class="line">    document.querySelector(&apos;#wrap&apos;).appendChild(renderer.domElement);</span><br><span class="line"></span><br><span class="line">    renderer.render(scene, camera);</span><br><span class="line">    </span><br><span class="line">    // 占位3</span><br><span class="line">  &lt;/script&gt;  </span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<p>结合注释 我相信大家完全能理解这份基础代码 到浏览器的效果呢 就是一个立方体</p>
+<p>现在呢 我们在占位2的地方 加上一行代码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cube.name = &apos;cube&apos;;</span><br></pre></td></tr></table></figure>
+<p><code>name</code>属性呢 就是给我们的cube网格对象一个名字</p>
+<p>这里的名字 就是<code>cube</code></p>
+<p>那这个名字有啥用呢</p>
+<p>我们可以通过 <code>scene.getObjectByName(name)</code> 来拿到我们命名的网格对象 (老版本的是getChildByName)</p>
+<p>知道了这点呢 我们在占位3的地方 加入一个定时器</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">setTimeout(function() &#123;</span><br><span class="line">  let cube = scene.getObjectByName(&apos;cube&apos;);</span><br><span class="line">  console.log(cube === scene.children[1]);</span><br><span class="line"></span><br><span class="line">  cube.scale.x = 7;</span><br><span class="line">  renderer.render(scene, camera);    </span><br><span class="line">&#125;, 1000);</span><br></pre></td></tr></table></figure>
+<p>通过<code>getObjectByName</code>就拿到了我们想要的cube 这时候我们可以对cube做出修改 这里修改了他的scale缩放属性</p>
+<p>沿着x轴放大7倍 放大以后记得重新渲染一下 在浏览器中刷新页面 等一秒 我们的小方块就变宽了</p>
+<p>这里第二行 <code>scene.children</code> 就能拿到数场景中物体的集合 他们是根据添加的顺序来的</p>
+<p>第二性呢 就是我们第二个加入的 第一项是摄像机 我们用严格等于比较 返回的是true</p>
+<p>所以我们也可以用<code>children</code>属性拿到所有的物体集合</p>
+<p>我们修改一下定时器 让一秒后在场景中加一个立方体</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">setTimeout(function() &#123;</span><br><span class="line">  let cube = scene.getObjectByName(&apos;cube&apos;);</span><br><span class="line">  console.log(cube === scene.children[1]);</span><br><span class="line"></span><br><span class="line">  let gCube = new T.BoxGeometry(5, 5, 5);</span><br><span class="line">  // 创建立方几何体的材质</span><br><span class="line">  let mCube = new T.MeshBasicMaterial(&#123; color: 0xFF0000, wireframe: true &#125;);</span><br><span class="line">  // 创建立方体网格对象</span><br><span class="line">  let newCube = new THREE.Mesh(gCube, mCube);</span><br><span class="line">  newCube.position.set(2, 8, 2);</span><br><span class="line"></span><br><span class="line">  scene.add(newCube);</span><br><span class="line"></span><br><span class="line">  cube.scale.x = 7;</span><br><span class="line">  renderer.render(scene, camera);    </span><br><span class="line">&#125;, 1000);</span><br></pre></td></tr></table></figure>
+<p>我们新创建了一个立方体 并放在了<code>scene</code>中</p>
+<p>既然可以<code>创建</code> 那也可以<code>删除</code></p>
+<p>创建是<code>add</code> 那删除就是<code>remove</code> 很常见的组合</p>
+<p>我们再在末尾写一个定时器</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">setTimeout(function() &#123;</span><br><span class="line">  let lastCube = scene.children[2];</span><br><span class="line"></span><br><span class="line">  scene.remove(lastCube);</span><br><span class="line"></span><br><span class="line">  renderer.render(scene, camera);          </span><br><span class="line">&#125;, 2000);</span><br></pre></td></tr></table></figure>
+<p>是不是觉得异常的简单呀~</p>
+<p>到现在 我们已经学到了和场景相关的部分方法和属性</p>
+<table>
+<thead>
+<tr>
+<th>方法/属性</th>
+<th style="text-align:center">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>add</td>
+<td style="text-align:center">往场景添加添加对象</td>
+</tr>
+<tr>
+<td>remove</td>
+<td style="text-align:center">移除场景中的对象</td>
+</tr>
+<tr>
+<td>children</td>
+<td style="text-align:center">获取场景中所有对象列表</td>
+</tr>
+<tr>
+<td>getObjectByName</td>
+<td style="text-align:center">通过对象的名字(<code>name</code>属性)获取对象</td>
+</tr>
+</tbody>
+</table>
+<h4 id="雾化"><a href="#雾化" class="headerlink" title="雾化"></a>雾化</h4><p>我们看一下雾化效果</p>
+<p>玩过3d游戏的小伙伴应该很舒旭 看远方场景的时候 经常是一片雾蒙蒙的</p>
+<p>这个效果其实就是<code>雾化</code></p>
+<p>加雾化效果很简单</p>
+<p>我们在占位1的地方 添加这么一行代码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scene.fog = new T.Fog(0xFFFFFF, 0.015, 90);</span><br></pre></td></tr></table></figure>
+<p>这样就加入了雾化效果</p>
+<p>第一个参数是雾的<code>颜色</code> 第二个呢 是<code>近值</code> 第三个是<code>远处</code>值 怎么理解呢 其实可以理解成雾化的范围</p>
+<p>通过后面两个属性 可以决定雾化开始和结束的地方</p>
+<p>还有一种雾化的方式</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scene.fog = new T.FogExp2(0xFFFFFF, 0.01)</span><br></pre></td></tr></table></figure>
+<p>这个雾化和刚才的差别在于 不用制定距离 第一个参数和第二个参数 分别代表<code>颜色</code>和<code>浓度</code></p>
+<h4 id="材质覆盖"><a href="#材质覆盖" class="headerlink" title="材质覆盖"></a>材质覆盖</h4><p>一旦设置场了景的<code>overrideMaterial</code>属性 场景中所有的物体的材质 都会被覆盖成这个属性指定的材质</p>
+<p>我们在声明场景后 设置一下这个属性</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scene.overrideMaterial = new T.MeshBasicMaterial(&#123; color: 0x00FF00 &#125;);</span><br></pre></td></tr></table></figure>
+<p>这个时候刷新浏览器 就是绿油油的俩立方体了</p>
+<h4 id="遍历场景中的对象"><a href="#遍历场景中的对象" class="headerlink" title="遍历场景中的对象"></a>遍历场景中的对象</h4><p>我们已经知道可以用<code>scene.children</code>来拿到所有对象或者说物体的集合</p>
+<p>然后我们就可以用<code>for-of</code>或者<code>for</code>或者<code>forEach</code>来遍历</p>
+<p>three.js中其实有方法来遍历我们的对象</p>
+<p>使用<code>scene.traverse</code>方法就可以</p>
+<p>该方法接受一个回调函数 回调函数的参数 就是遍历到的对象</p>
+<p>我们再加一个定时器</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">setTimeout(function() &#123;</span><br><span class="line">  scene.traverse(item =&gt; &#123;</span><br><span class="line">    if (item instanceof T.Mesh) &#123;</span><br><span class="line">      item.position.x -= 3;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  renderer.render(scene, camera);          </span><br><span class="line">&#125;, 1500);</span><br></pre></td></tr></table></figure>
+<p>这里呢 我们使用了<code>traverse</code>方法 对对象进行遍历</p>
+<p>我们这里加的判断 是为了保证接下来要操作的对象 是网格对象</p>
+<p>因为对象集合中 还包括摄影机和场景本身 这个我们是需要过滤掉的</p>
+<p>然后 我们在if中把当前遍历到的网格对象在x轴上的位置<code>-3</code></p>
+<p>这时候我们刷新浏览器 在1.5秒左右的时候 两个绿油油的方块就往x轴的负方向移动了3<code>(米)</code> 当然 这个单位是相对的 你可以理解成米 也可以理解成公里</p>
+<p>到目前 我们又了解了三个新的方法与属性</p>
+<table>
+<thead>
+<tr>
+<th>方法/属性</th>
+<th style="text-align:center">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>fog</td>
+<td style="text-align:center">雾化场景</td>
+</tr>
+<tr>
+<td>overrideMaterial</td>
+<td style="text-align:center">可以覆盖场景中所有物体的材质</td>
+</tr>
+<tr>
+<td>traverse</td>
+<td style="text-align:center">遍历场景的物体</td>
+</tr>
+</tbody>
+</table>
+<p>瞧一下到目前为止的完整代码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=&quot;en&quot;&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">  &lt;meta charset=&quot;UTF-8&quot;&gt;</span><br><span class="line">  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;</span><br><span class="line">  &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;ie=edge&quot;&gt;</span><br><span class="line">  &lt;title&gt;Document&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">  &lt;div id=&quot;wrap&quot;&gt;&lt;/div&gt;</span><br><span class="line">  &lt;script src=&quot;https://cdn.bootcss.com/three.js/92/three.min.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">  &lt;script&gt;</span><br><span class="line">    const T = THREE;</span><br><span class="line"></span><br><span class="line">    // 创建场景</span><br><span class="line">    let scene = new T.Scene();</span><br><span class="line">    scene.fog = new T.Fog(0xFFFFFF, 0.015, 90);</span><br><span class="line">    scene.overrideMaterial = new T.MeshBasicMaterial(&#123; color: 0x00FF00 &#125;);</span><br><span class="line"></span><br><span class="line">    // 创建相机</span><br><span class="line">    let camera = new T.PerspectiveCamera(45, window.innerHeight / window.innerWidth, 0.1, 1000);</span><br><span class="line"></span><br><span class="line">    camera.position.x = -30;</span><br><span class="line">    camera.position.y = 40;</span><br><span class="line">    camera.position.z = 30;</span><br><span class="line">    camera.lookAt(scene.position);</span><br><span class="line">    // 把相机放到场景中</span><br><span class="line">    scene.add(camera);</span><br><span class="line"></span><br><span class="line">    // 创建一个立方几何体</span><br><span class="line">    let gCube = new T.BoxGeometry(5, 5, 5);</span><br><span class="line">    // 创建立方几何体的材质</span><br><span class="line">    let mCube = new T.MeshBasicMaterial(&#123; color: 0xFF0000, wireframe: true &#125;);</span><br><span class="line">    // 创建立方体网格对象</span><br><span class="line">    let cube = new THREE.Mesh(gCube, mCube);</span><br><span class="line">    // 给立方体一个名字</span><br><span class="line">    cube.name = &apos;cube&apos;;</span><br><span class="line">    cube.position.set(0, 0, 0);</span><br><span class="line">    // 把立方体放进场景中</span><br><span class="line">    scene.add(cube);</span><br><span class="line"></span><br><span class="line">    // 创建渲染器</span><br><span class="line">    let renderer = new T.WebGLRenderer();</span><br><span class="line">    // 背景色 eee</span><br><span class="line">    renderer.setClearColor(0xEEEEEE);</span><br><span class="line">    // 设置大小 全屏</span><br><span class="line">    renderer.setSize(window.innerWidth, window.innerHeight);</span><br><span class="line">    document.querySelector(&apos;#wrap&apos;).appendChild(renderer.domElement);</span><br><span class="line"></span><br><span class="line">    renderer.render(scene, camera);</span><br><span class="line"></span><br><span class="line">    setTimeout(function() &#123;</span><br><span class="line">      let cube = scene.getObjectByName(&apos;cube&apos;);</span><br><span class="line">      console.log(cube === scene.children[1]);</span><br><span class="line"></span><br><span class="line">      let gCube = new T.BoxGeometry(5, 5, 5);</span><br><span class="line">      // 创建立方几何体的材质</span><br><span class="line">      let mCube = new T.MeshBasicMaterial(&#123; color: 0xFF0000, wireframe: true &#125;);</span><br><span class="line">      // 创建立方体网格对象</span><br><span class="line">      let newCube = new THREE.Mesh(gCube, mCube);</span><br><span class="line">      // 给立方体一个名字</span><br><span class="line">      newCube.position.set(2, 8, 2);</span><br><span class="line"></span><br><span class="line">      scene.add(newCube);</span><br><span class="line"></span><br><span class="line">      cube.scale.x = 7;</span><br><span class="line">      renderer.render(scene, camera);    </span><br><span class="line">    &#125;, 1000);</span><br><span class="line"></span><br><span class="line">    setTimeout(function() &#123;</span><br><span class="line">      scene.traverse(item =&gt; &#123;</span><br><span class="line">        if (item instanceof T.Mesh) &#123;</span><br><span class="line">          item.position.x -= 3;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;);</span><br><span class="line"></span><br><span class="line">      renderer.render(scene, camera);          </span><br><span class="line">    &#125;, 1500);</span><br><span class="line"></span><br><span class="line">    setTimeout(function() &#123;</span><br><span class="line">      let lastCube = scene.children[2];</span><br><span class="line"></span><br><span class="line">      scene.remove(lastCube);</span><br><span class="line"></span><br><span class="line">      renderer.render(scene, camera);          </span><br><span class="line">    &#125;, 2000);</span><br><span class="line"></span><br><span class="line">  &lt;/script&gt;  </span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="几何体和网格"><a href="#几何体和网格" class="headerlink" title="几何体和网格"></a>几何体和网格</h2><p>我们已经尝试着使用过几何体了</p>
+<p>比如使用 <code>SphereGeometry</code> 来生成了一个球体</p>
+<p>然后把<code>几何体</code>和<code>材质</code>结合 来生成一个网格对象</p>
+<p>其实Three.js中的几何体 都是<code>点集</code></p>
+<p>什么是点集呢 加入我们要一个立方体 那就得有八个顶点 八个顶点能形成六个面 就变成了一个立方体</p>
+<p>我们使用自带的立方体呢 其实就是Three.js帮我们预先定义好的<code>点集</code> 根据我们的参数然后来生成一个几何体</p>
+<p>这样 我们就不需要在用常用的集合体的时候 去计算他的点和面 然后计算出一个立方体</p>
+<blockquote>
+<p>其实一个矩形的面会拆成2个三角形 应为这样渲染的效率更高 有关利用点面来形成一个几何体的内容 后续在谈 这里留个印象就可以了</p>
+</blockquote>
+<p>抛出一个疑问 我们想要一个几何体 但是他想要有多个材质怎么办</p>
+<p>我们对代码稍微做一点修改 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">// 创建立方几何体的材质</span><br><span class="line">// let mCube = new T.MeshBasicMaterial(&#123; color: 0xFF0000, wireframe: true &#125;);</span><br><span class="line"></span><br><span class="line">let cubeMs = [</span><br><span class="line">  new T.MeshLambertMaterial(&#123;</span><br><span class="line">    opacity: .6,</span><br><span class="line">    color: 0x0000ff,</span><br><span class="line">    transparent: true</span><br><span class="line">  &#125;),</span><br><span class="line">  new T.MeshBasicMaterial(&#123;</span><br><span class="line">    color: 0xff00ff,</span><br><span class="line">    wireframe: true</span><br><span class="line">  &#125;)</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line">// 创建立方体网格对象</span><br><span class="line">// let cube = new THREE.Mesh(gCube, mCube);</span><br><span class="line">let cube = T.SceneUtils.createMultiMaterialObject(gCube, cubeMs);</span><br></pre></td></tr></table></figure>
+<p>注释掉原来的材质声明 还有创建网格对象那一句也注释掉</p>
+<p>然后我们改成新的 首先 有一个<code>cubeMs</code>数组 里面放的就是多个材质 </p>
+<p>第一个材质是会反光的 因为我们现在没有光源 所以设置了颜色也没用 会是黑色 然后我们设置了<code>opacity</code> 就是不同明度 然后把透明打开</p>
+<p>第二个材质就是普通的材质 显示线框</p>
+<p>然后就是在创建立方体网格对象的时候 我们不是 <code>new T.Mesh</code> 了 我们采用 <code>T.SceneUtils.createMultiMaterialObject</code> 这个方法</p>
+<p>这个方法在最新的Three.js中已经作为单独的模块挪出来了 之前是何在一起的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">THREE.SceneUtils = &#123;</span><br><span class="line"></span><br><span class="line">  createMultiMaterialObject: function (geometry, materials) &#123;</span><br><span class="line"></span><br><span class="line">    var group = new THREE.Group();</span><br><span class="line"></span><br><span class="line">    for (var i = 0, l = materials.length; i &lt; l; i++) &#123;</span><br><span class="line"></span><br><span class="line">      group.add(new THREE.Mesh(geometry, materials[i]));</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return group;</span><br><span class="line"></span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  detach: function (child, parent, scene) &#123;</span><br><span class="line"></span><br><span class="line">    child.applyMatrix(parent.matrixWorld);</span><br><span class="line">    parent.remove(child);</span><br><span class="line">    scene.add(child);</span><br><span class="line"></span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  attach: function (child, scene, parent) &#123;</span><br><span class="line"></span><br><span class="line">    child.applyMatrix(new THREE.Matrix4().getInverse(parent.matrixWorld));</span><br><span class="line"></span><br><span class="line">    scene.remove(child);</span><br><span class="line">    parent.add(child);</span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>把这段代码 复制到我们的代码最前面就好了</p>
+<p>然后我们刷新浏览器 最初的那个小格子就有俩材质了</p>
+<p>感兴趣的同学可以简单的看一下这个小工具的源码</p>
+<p>里面其实就是声明了一个<code>group</code>组 然后把我们的每个材质和几何体生成网格 然后放到组里面 最后返回组</p>
+<p>我们已经可以放多个材质了</p>
+<h4 id="克隆几何体"><a href="#克隆几何体" class="headerlink" title="克隆几何体"></a>克隆几何体</h4><p>如果我们的几何体很复杂 我们可能会想直接克隆这个几何体</p>
+<p>我们可以用用<code>geometry.clone</code>方法</p>
+<p>修改一下第一个定时器</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">setTimeout(function () &#123;</span><br><span class="line">  let cube = scene.getObjectByName(&apos;cube&apos;);</span><br><span class="line">  console.log(cube === scene.children[1]);</span><br><span class="line"></span><br><span class="line">  // let gCube = new T.BoxGeometry(5, 5, 5);</span><br><span class="line">  // 创建立方几何体的材质</span><br><span class="line">  // let mCube = new T.MeshBasicMaterial(&#123;</span><br><span class="line">  //   color: 0xFF0000,</span><br><span class="line">  //   wireframe: true</span><br><span class="line">  // &#125;);</span><br><span class="line">  // // 创建立方体网格对象</span><br><span class="line">  // let newCube = new THREE.Mesh(gCube, mCube);</span><br><span class="line">  // 给立方体一个名字</span><br><span class="line">  let gCube = cube.children[0].geometry.clone();</span><br><span class="line"></span><br><span class="line">  let cubeMs = [</span><br><span class="line">    new T.MeshLambertMaterial(&#123;</span><br><span class="line">      opacity: .6,</span><br><span class="line">      color: 0x0000ff,</span><br><span class="line">      transparent: true</span><br><span class="line">    &#125;),</span><br><span class="line">    new T.MeshBasicMaterial(&#123;</span><br><span class="line">      color: 0xff00ff,</span><br><span class="line">      wireframe: true</span><br><span class="line">    &#125;)</span><br><span class="line">  ]</span><br><span class="line"></span><br><span class="line">  // 创建立方体网格对象</span><br><span class="line">  // let cube = new THREE.Mesh(gCube, mCube);</span><br><span class="line">  let newCube = T.SceneUtils.createMultiMaterialObject(gCube, cubeMs);</span><br><span class="line"></span><br><span class="line">  newCube.position.set(2, 8, 2);</span><br><span class="line"></span><br><span class="line">  scene.add(newCube);</span><br><span class="line"></span><br><span class="line">  cube.scale.x = 7;</span><br><span class="line">  renderer.render(scene, camera);</span><br><span class="line">&#125;, 1000);</span><br></pre></td></tr></table></figure>
+<p>看起来代码好像很多 其实变化不是太大</p>
+<p>我们通过<code>cube.children[0].geometry</code> 拿到了cube组中第一个网格对象的几何体</p>
+<p>然后通过 <code>clone</code> 方法 就把这个几何体克隆出来了</p>
+<p>然后就是和之前的cube一样的材质 生成一个组 放到scene中就好了</p>
+<p>现在刷新浏览器 新生成的网格对象 就和另一个一样了</p>
+<h4 id="网格对象的属性和方法"><a href="#网格对象的属性和方法" class="headerlink" title="网格对象的属性和方法"></a>网格对象的属性和方法</h4><p>我们先列一下属性</p>
+<table>
+<thead>
+<tr>
+<th>方法/属性</th>
+<th style="text-align:center">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>position</td>
+<td style="text-align:center">位置</td>
+</tr>
+<tr>
+<td>rotation</td>
+<td style="text-align:center">旋转</td>
+</tr>
+<tr>
+<td>scale</td>
+<td style="text-align:center">缩放</td>
+</tr>
+<tr>
+<td>translateX(Y/Z)</td>
+<td style="text-align:center">位移</td>
+</tr>
+<tr>
+<td>visible</td>
+<td style="text-align:center">是否被渲染</td>
+</tr>
+</tbody>
+</table>
+<p>相信熟悉CSS的同学 对这些属性都很好理解 就不再讲解了</p>
+<h2 id="摄影机"><a href="#摄影机" class="headerlink" title="摄影机"></a>摄影机</h2><p>之前也提到过 摄影机分两种</p>
+<p><code>正交摄像机</code> 和 <code>透视摄像机</code></p>
+<h4 id="透视摄像机"><a href="#透视摄像机" class="headerlink" title="透视摄像机"></a>透视摄像机</h4><p>透视摄像机拍摄到的画面呢 就和我们现实中看到的物体一样 近大远小</p>
+<p>看一下他的构造函数</p>
+<p><code>THREE.PerspectiveCamera(fov, aspect, near, far, zoom)</code></p>
+<p>分别看一下参数吧</p>
+<ul>
+<li><code>fov</code> 视场 可以理解成人上眼皮和下眼皮的夹角 这个夹角越大 看到的东西就越多 越小看到的就越少</li>
+<li><code>aspect</code> 长宽比 我们看到内容的长宽比</li>
+<li><code>near</code> 近面距离 离摄像机多近的距离开始渲染</li>
+<li><code>far</code> 远面距离 离摄像机多远看不到画面</li>
+<li><code>zoom</code> 变焦 就像焦距一样 角度为负数画面就反了</li>
+</ul>
+<h4 id="正交摄像机"><a href="#正交摄像机" class="headerlink" title="正交摄像机"></a>正交摄像机</h4><p>正交相机呢 就像我们玩2d游戏时候一样 怎么走大小都是不变的</p>
+<p>看一下构造函数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">THREE.OrthographicCamera(left, right, top, bottom, near, far, zoom)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>left</code> 左边界</li>
+<li><code>righht</code> 右边界</li>
+<li><code>top</code> 上边界</li>
+<li><code>bottom</code> 下边界</li>
+<li><code>near</code> 近面距离</li>
+<li><code>far</code> 远面距离</li>
+<li><code>zoom</code> 变焦 </li>
+</ul>
+<p>上下左右边界 其实就是定义了看到的宽高</p>
+<p>我们接着来修改一下例子</p>
+<p>在html中加个按钮</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;button id=&quot;chgCamera&quot;&gt;变相机&lt;/button&gt;</span><br></pre></td></tr></table></figure>
+<p>样式就不加了 往下拉一点可以看到按钮</p>
+<p>我们给按钮加个事件</p>
+<p>先把相机的位置改改<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">// 创建相机</span><br><span class="line">let camera = new T.PerspectiveCamera(45, window.innerHeight / window.innerWidth, 0.1, 1000);</span><br><span class="line"></span><br><span class="line">// camera.position.x = -30;</span><br><span class="line">// camera.position.y = 40;</span><br><span class="line">// camera.position.z = 30;</span><br><span class="line">camera.position.set(20, 20, 20);</span><br></pre></td></tr></table></figure></p>
+<p><code>position.set</code>方法可以直接设置xyz轴的坐标</p>
+<p>然后给按钮加上click事件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">document.querySelector(&apos;#chgCamera&apos;).addEventListener(&apos;click&apos;, e =&gt; &#123;</span><br><span class="line">  if (camera instanceof THREE.PerspectiveCamera) &#123;</span><br><span class="line">    camera = new T.OrthographicCamera(window.innerWidth / -60, window.innerWidth / 60, window.innerHeight / 60, window.innerHeight / -60,  0.1, 1000);</span><br><span class="line"></span><br><span class="line">    camera.position.set(10, 10, 10);</span><br><span class="line">    camera.lookAt(scene.position);</span><br><span class="line"></span><br><span class="line">    renderer.render(scene, camera);</span><br><span class="line"></span><br><span class="line">    return;</span><br><span class="line">  &#125;</span><br><span class="line">  camera = new T.PerspectiveCamera(45, window.innerHeight / window.innerWidth, 0.1, 1000);</span><br><span class="line">  camera.position.set(20, 20, 20);</span><br><span class="line">  camera.lookAt(scene.position);</span><br><span class="line"></span><br><span class="line">  renderer.render(scene, camera);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>现在我们去浏览器里戳我们的按钮 就会切换相机 两种相机的区别是一目了然了</p>
+<p>相机有一个 <code>lookAt</code> 方法</p>
+<p>这个其实我们可以理解成照相机 照相机放在某个位置 是可以靠坐标确定的</p>
+<p>但是照相机朝向谁 就靠镜头的方向决定了</p>
+<p><code>lookAt</code>就是让摄像机的镜头朝着一个点 或者一个物体的位置</p>
+<p>但是其实一个物体的位置 就是一个<code>Vector3</code> 一个Mesh的position 也是<code>Vector3</code> lookAt方法看向的 就是<code>Vector3</code></p>
+<p>现在 我们让其中一个立方体移动 然后让相机 看向这个立方体</p>
+<p>在末尾加一个定时器</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">let step = 0;</span><br><span class="line">setInterval(function() &#123;</span><br><span class="line">  step += 0.02;</span><br><span class="line"></span><br><span class="line">  let pos = 10 + ( 100 * (Math.sin(step)));</span><br><span class="line"></span><br><span class="line">  scene.getObjectByName(&apos;cube&apos;).position.z = pos;</span><br><span class="line">  camera.lookAt(scene.getObjectByName(&apos;cube&apos;).position);</span><br><span class="line"></span><br><span class="line">  renderer.render(scene, camera);</span><br><span class="line">&#125;, 16);</span><br></pre></td></tr></table></figure>
+<p>这里通过一个简单的步长计算 让一个值在一个区间内来回浮动</p>
+<p>然后把这个值赋给cube的在z轴上的位置</p>
+<p>然后把摄像机的<code>lookAt</code>再设置为cube的位置</p>
+<p>这样我们的摄像机就跟随我们的cube移动了</p>
+</div></header></article><!--div.comments#lv-container(data-id = theme.livere_id, data-uid = theme.livere_uid)//script.
+  //(function(d, s) {var j, e = d.getElementsByTagName(s)[0];if (typeof LivereTower === 'function') { return; } j = d.createElement(s);j.src = 'https://cdn-city.livere.com/js/embed.dist.js';j.async = true;e.parentNode.insertBefore(j, e);})(document, 'script');--></main><footer class="foot"><div class="foot-copy">&copy; 2017-2018 NISAL</div></footer><script src="/js/scroller.js"></script><script src="/js/main.js"></script></body></html>
